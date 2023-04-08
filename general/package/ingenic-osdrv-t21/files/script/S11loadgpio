@@ -1,0 +1,18 @@
+#!/bin/sh
+
+# Enable Wireless Module
+echo 50 > /sys/class/gpio/export
+echo out > /sys/class/gpio/gpio50/direction
+## Turn on (active low)
+echo 0 > /sys/class/gpio/gpio50/value
+
+# Status LED's
+## GREEN - Turn it off
+echo 75 > /sys/class/gpio/export                      
+echo out > /sys/class/gpio/gpio75/direction
+echo 0 > /sys/class/gpio/gpio75/value
+
+## RED - Turn it on
+echo 78 > /sys/class/gpio/export                      
+echo out > /sys/class/gpio/gpio78/direction
+echo 1 > /sys/class/gpio/gpio78/value 
