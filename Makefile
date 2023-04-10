@@ -24,7 +24,8 @@ ROOT_DIR      := $(CURDIR)
 BR_EXT_DIR    := $(ROOT_DIR)/br-ext-chip-$(PLATFORM)
 SCRIPTS_DIR   := $(ROOT_DIR)/scripts
 
-BR_VER        ?= 2021.02.12
+# BR_VER        ?= 2021.02.12
+BR_VER        ?= 2023.02
 BR_DIR        := $(ROOT_DIR)/buildroot-$(BR_VER)
 
 .PHONY: usage help clean distclean prepare install-deps all toolchain-params run-tests overlayed-rootfs-%
@@ -135,7 +136,7 @@ $(OUT_DIR)/toolchain-params.mk: $(OUT_DIR)/.config $(SCRIPTS_DIR)/create_toolcha
 
 # TODO: Elaborate how to compile wireguard-linux-compat under GCC 12 without this patch
 define remove-patches
-	$(if $(filter $(BR_VER),2020.02.12 2021.02.12),-rm general/package/all-patches/wireguard-linux-compat/remove_fallthrough.patch)
+	$(if $(filter $(BR_VER),2020.02.12 2021.02.12 2023.02),-rm general/package/all-patches/wireguard-linux-compat/remove_fallthrough.patch)
 endef
 
 

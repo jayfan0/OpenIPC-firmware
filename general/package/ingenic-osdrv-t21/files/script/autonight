@@ -1,0 +1,45 @@
+#!/bin/sh
+
+PREVSTATE=0
+CURRENTSTATE=0
+
+while true
+do
+	AVG=1
+	
+	dd status=none if=/dev/jz_adc_aux_0 count=20  |  sed -e 's/[^\.]//g' | wc -m >> /var/run/ldr
+
+	# Add new line to file with measurements
+	tail -n $AVG /var/run/ldr > /var/run/ldr-temp
+	mv /var/run/ldr-temp  /var/run/ldr
+
+	# cut /var/run/ldr to desired number of lines
+	LINES=`cat /var/run/ldr | wc -l`
+	if [ $LINES -lt $AVG ]; then AVG=$LINES; fi
+
+	# to avoid slow switching when starting up, use the number of lines when there are less than the average
+	# this may cause some flickering when starting up
+	SUM=`awk '{s+=$1} END {printf "%.0f", s}' /var/run/ldr`
+	#AVGMEASUREMENT=$(( $SUM / $AVG )) # when use and SUM=0, return error divide by zero, solution below:
+	[[ ! $SUM -eq 0 || ! $AVG -eq 0 ]] && AVGMEASUREMENT=$(( $SUM / $AVG )) || AVGMEASUREMENT=0 # calculate the average
+
+	if [ $AVGMEASUREMENT -le 50 ] #Light Detected
+	then
+		CURRENTSTATE=0
+	else
+		CURRENTSTATE=1
+	fi
+
+	if [ $CURRENTSTATE -ne $PREVSTATE ]
+	then
+		if [ $CURRENTSTATE -eq 0 ]
+		then
+			curl http://127.0.0.1/night/off
+	
+		else # nothing in Buffer -> no light
+			curl http://127.0.0.1/night/on
+		fi
+		PREVSTATE=$CURRENTSTATE
+	fi
+sleep 10
+done
