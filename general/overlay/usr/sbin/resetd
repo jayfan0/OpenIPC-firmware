@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Set Reset switch GPIO
-GPIO=
+GPIO=59
 
 [ -z $GPIO ] && echo "GPIO not set. Exiting" && echo "[resetd] GPIO undefined in /usr/sbin/resetd" > /dev/kmsg && exit
 
