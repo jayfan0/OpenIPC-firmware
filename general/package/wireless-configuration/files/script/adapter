@@ -2,7 +2,7 @@
 SOC=$(fw_printenv -n soc)
 
 # SSC338Q CamHi
-if [ "$SOC" == "ssc338q" ]; then
+if [ "$CONFIG" = "ssc338q_lite_defconfig" ] || [ "$CONFIG" = "ssc338q_sdcard_defconfig" ]; then
 	modprobe 8733bu
 fi
 
@@ -15,7 +15,7 @@ if [ "$SOC" == "hi3516ev300" ]; then
 fi
 
 # T21 BJS
-if [ "$SOC" == "t21" ]; then
+if [ "$CONFIG" = "t21_lite_defconfig" ]; then
 	gpio clear 50
 	gpio unexport 50
 	modprobe 8188fu
